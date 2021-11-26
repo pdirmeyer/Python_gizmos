@@ -33,7 +33,7 @@ where $R$, $G$ and $B$ are the intensities of true red, green and blue respectiv
 
 The equation for brightness $Y$ is informative of our everyday experience. You have probably noticed that on a color computer display (especially harkening back to the old days of 4-bit VGA color) the green always seemed very bright, and the blue quite dim. This was not a problem in the monitors of the day, nor the computers, but is indicative of how our eyes gather light. The same can be seen clearly in the rainbow spectrum produced by a prism defracting white light. 
 
-![Cone-fundamentals-with-srgb-spectrum.png](attachment:8e6605e8-3439-4b6a-adae-6cc39a4bb2bc.png)
+![Cone-fundamentals-with-srgb-spectrum.png](./figs/Cone-fundamentals-with-srgb-spectrum.png)
 
 ##### *Figure: Normalized responsivity spectra of human cone cells - from Wikimedia Commons*
 
@@ -88,20 +88,20 @@ Note that it would be straightforward to include any arbitrary number of points 
 In addition to *sequential* and *diverging* color scales, we also show a third variant called *tailed*, which is a sequential color scale with a contrasting tail on one side of the scale. The *tailed* color scale can be useful for emphasizing an extreme or where distributions are highly asymmetric. The code generating these colormaps is in a [Jupyter Notebook](Gradient_maker_example.ipynb) - it also provides examples of some of the other functions in the Gradient_maker module.
 
 ##### Sequential colormaps produced using `grad_brite`:
-![ggb_sequential.jpg](attachment:e9d87e9e-fd00-4ddc-9338-ce081f0f4d10.jpg)
+![ggb_sequential.jpg](./figs/ggb_sequential.jpg)
 
 ##### Diverging colormaps produced using `grad_brite`:
-![ggb_diverging.jpg](attachment:741dfc06-475d-48f8-a44a-0bf571c8fb0a.jpg)
+![ggb_diverging.jpg](./figs/ggb_diverging.jpg)
 
 ##### Tailed colormaps produced using `grad_brite`:
-![ggb_tailed.jpg](attachment:24bab612-dc0b-4975-b625-134583cdebf4.jpg)
+![ggb_tailed.jpg](./figs/ggb_tailed.jpg)
 
 ##### Reproduction of GrADS-style colormaps using `grad_brite`: 
-![ggb_grads.jpg](attachment:cbc02ab8-ef5d-4417-82fc-74c4a26104af.jpg)
+![ggb_grads.jpg](./figs/ggb_grads.jpg)
 
 As an example of the smoothness attained in brightness, look at the sequential colormaps with color saturation at zero:
 
-![ggb_sequential_bw.jpg](attachment:b3b9ad30-64af-4f5a-8d11-ca46d7a5a832.jpg)
+![ggb_sequential_bw.jpg](./figs/ggb_sequential_bw.jpg)
 
 #### Other online resources for color
 

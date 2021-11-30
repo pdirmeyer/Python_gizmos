@@ -27,18 +27,20 @@ There are a number of web sites that provide information and even simulations of
 
 #### Perception of brightness
 
-As noted in [*Green (2011)*](https://arxiv.org/abs/1108.5083), human perception of brightness is a weighted average of the intensities of the three primary colors. However, because even a healthy human eye is not perfectly calibrated to red, green and blue, brightness perception is uneven across the color spectrum. There are many empirical formulations, but here the tried-and-true NTSC (US National Television System Committee) specification for luminance $Y$ from the 1950s is used:
-$$Y = 0.30R + 0.59G + 0.11B$$
-where $R$, $G$ and $B$ are the intensities of true red, green and blue respectively, expressed on a scale of 0-1. For the common RGB "16 million color" specification, each color is represented as an integer in the range 0-255; the conversion to apply the equation above is to divide each RGB value by 255. The same is true for the common hexadecimal specification, typically written as `#rrggbb` where each `rr`, `gg` and `bb` is a 2-digit hexadecimal number.
+As noted in [*Green (2011)*](https://arxiv.org/abs/1108.5083), human perception of brightness is a weighted average of the intensities of the three primary colors. However, because even a healthy human eye is not perfectly calibrated to red, green and blue, brightness perception is uneven across the color spectrum. There are many empirical formulations, but here the tried-and-true NTSC (US National Television System Committee) specification for brightness or luminance λ from the 1950s is used:
 
-The equation for brightness $Y$ is informative of our everyday experience. You have probably noticed that on a color computer display (especially harkening back to the old days of 4-bit VGA color) the green always seemed very bright, and the blue quite dim. This was not a problem in the monitors of the day, nor the computers, but is indicative of how our eyes gather light. The same can be seen clearly in the rainbow spectrum produced by a prism defracting white light. 
+λ = 0.30R + 0.59G + 0.11B
+
+where R, G and B are the intensities of true red, green and blue respectively, expressed on a scale of 0-1. For the common RGB "16 million color" specification, each color is represented as an integer in the range 0-255; the conversion to apply the equation above is to divide each RGB value by 255. The same is true for the common hexadecimal specification, typically written as `#rrggbb` where each `rr`, `gg` and `bb` is a 2-digit hexadecimal number.
+
+The equation for luminance λ is informative of our everyday experience. You have probably noticed that on a color computer display (especially harkening back to the old days of 4-bit VGA color) the green always seemed very bright, and the blue quite dim. This was not a problem in the monitors of the day, nor the computers, but is indicative of how our eyes gather light. The same can be seen clearly in the rainbow spectrum produced by a prism defracting white light. 
 
 ![Cone-fundamentals-with-srgb-spectrum.png](./figs/Cone-fundamentals-with-srgb-spectrum.png)
 
 ##### *Figure: Normalized responsivity spectra of human cone cells - from Wikimedia Commons*
 
 
-Each of the three kinds of cones in the human eye gathers a distribution of light centered at a particular wavelength. Green is in the middle of the visible spectrum. The M cone preferentially responds to green but also colors on either side. The red cone L overlaps green to a great extent. The blue cone S is rather isolated in the spectrum but also gathers some green light. This triple-sampling of green is why light that color appears brighter than red or blue, and why its coefficient in calculating luminance $Y$ accounts for more than half of the total weighting. The green cone also samples some red, so the coefficient for red has the middle weighting. The greatest overlap is at the color yellow, which is why we perceive yellow as the brightest of all colors. The blue coefficient gets the smallest weight. 
+Each of the three kinds of cones in the human eye gathers a distribution of light centered at a particular wavelength. Green is in the middle of the visible spectrum. The M cone preferentially responds to green but also colors on either side. The red cone L overlaps green to a great extent. The blue cone S is rather isolated in the spectrum but also gathers some green light. This triple-sampling of green is why light that color appears brighter than red or blue, and why its coefficient in calculating luminance λ accounts for more than half of the total weighting. The green cone also samples some red, so the coefficient for red has the middle weighting. The greatest overlap is at the color yellow, which is why we perceive yellow as the brightest of all colors. The blue coefficient gets the smallest weight. 
 
 The large spectral overlap between the red L cone and green M cone is why we seem to perceive so many subtle color gradiations between them (in the red-orange-yellow-green range) as compared to the cyan-blue-indigo-violet range where we are much less sensitive to small shifts in color.
 

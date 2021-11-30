@@ -174,7 +174,8 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
         c_lcl_z = ((T[0]-Td[0]) * (125 * units.m / units.degK)).to_base_units()
         c_el_p,c_el_t = mpcalc.el(p, T, Td, which='most_cape')
         c_pw = mpcalc.precipitable_water(p,Td)
-        c_lfc_p,c_lfc_t = mpcalc.lfc(p, T, Td, t_parcel, which='top')
+        c_lfc_p,c_lfc_t = mpcalc.lfc(p, T, Td, t_parcel)
+        c_lfc_t = c_lfc_t.to(units.degC)
 
         if not np.isnan(c_el_p.magnitude):
             plt.figtext(text_edge, 0.47,"EL: "+('%.0f' % c_el_p.magnitude)+" hPa", ha='left', va='center',fontsize=20,c='sienna')

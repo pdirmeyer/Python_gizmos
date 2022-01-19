@@ -204,7 +204,7 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     s_site = df['station'][0]
     s_time = '{dt:%Y%m%d_%H%M}'.format(dt=df['time'][0])
     add_timestamp(skew.ax, datetime.strptime(s_time, '%Y%m%d_%H%M'), pretext='Valid: ', y=1.02, x=-0.1, ha='left', fontsize=17)
-    skew.ax.set_title(s_site,fontsize=28)
+    skew.ax.set_title(s_site,fontsize=28,x=0.66)
 
 
     ###############################################################

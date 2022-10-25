@@ -35,6 +35,8 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     Outputs:
         skew         (object)         = The generated plot as an object
     """
+    
+    
     ###############################################################
     ### Set up interctive display
     plt.close()
@@ -62,7 +64,7 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     fig = plt.figure(figsize=(14, 10))
     skew = SkewT(fig,rect=(0.05,0.1,0.7,0.8),rotation=45) # `rotation` sets the slope of the isotherms
 ###    skew = SkewT(fig, rotation=45) # `rotation` sets the slope of the isotherms
-    text_edge = 0.76
+    text_edge = 0.75
 
     ###############################################################
     ### Block for calculating and plotting stability
@@ -115,13 +117,13 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
             x2 = [(50.0 * units.degC),(50.0 * units.degC)]
             skew.shade_area(y, x1, x2, which='both', facecolor=c_stab[t_type[i]])
 
-        plt.figtext(text_edge, 0.68,"Unstable", ha='left', va='center',fontsize=20,c=c_stab[6])
-        plt.figtext(text_edge, 0.71,"Neutral or Adiabatic", ha='left', va='center',fontsize=20,c=c_stab[5])
-        plt.figtext(text_edge, 0.74,"Conditionally Unstable", ha='left', va='center',fontsize=20,c=c_stab[4])
-        plt.figtext(text_edge, 0.77,"Moist Adiabatic", ha='left', va='center',fontsize=20,c=c_stab[3])
-        plt.figtext(text_edge, 0.80,"Stable", ha='left', va='center',fontsize=20,c=c_stab[2])
-        plt.figtext(text_edge, 0.83,"Isothermal", ha='left', va='center',fontsize=20,c=c_stab[1])
-        plt.figtext(text_edge, 0.86,"Inversion", ha='left', va='center',fontsize=20,c=c_stab[0])
+        plt.figtext(text_edge, 0.68,"Unstable", ha='left', va='center',fontsize=19,c=c_stab[6])
+        plt.figtext(text_edge, 0.71,"Neutral or Adiabatic", ha='left', va='center',fontsize=19,c=c_stab[5])
+        plt.figtext(text_edge, 0.74,"Conditionally Unstable", ha='left', va='center',fontsize=19,c=c_stab[4])
+        plt.figtext(text_edge, 0.77,"Moist Adiabatic", ha='left', va='center',fontsize=19,c=c_stab[3])
+        plt.figtext(text_edge, 0.80,"Stable", ha='left', va='center',fontsize=19,c=c_stab[2])
+        plt.figtext(text_edge, 0.83,"Isothermal", ha='left', va='center',fontsize=19,c=c_stab[1])
+        plt.figtext(text_edge, 0.86,"Inversion", ha='left', va='center',fontsize=19,c=c_stab[0])
 
 
     ###############################################################
@@ -178,24 +180,38 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
         c_lfc_t = c_lfc_t.to(units.degC)
 
         if not np.isnan(c_el_p.magnitude):
-            plt.figtext(text_edge, 0.47,"EL: "+('%.0f' % c_el_p.magnitude)+" hPa", ha='left', va='center',fontsize=20,c='sienna')
-            plt.figtext(text_edge, 0.44,"EL: "+('%.1f' % c_el_t.magnitude)+"˚C", ha='left', va='center',fontsize=20,c='sienna')
+            plt.figtext(text_edge, 0.47,f"EL: {c_el_p.magnitude:.0f} hPa", ha='left', va='center',fontsize=19,c='sienna')
+            plt.figtext(text_edge, 0.44,f"EL: {c_el_t.magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='sienna')
         if not np.isnan(c_lfc_p.magnitude):
-            plt.figtext(text_edge, 0.39,"LFC: "+('%.1f' % c_lfc_p.magnitude)+" hPa", ha='left', va='center',fontsize=20,c='tab:red')
-            plt.figtext(text_edge, 0.36,"LFC: "+('%.1f' % c_lfc_t.magnitude)+"˚C", ha='left', va='center',fontsize=20,c='tab:red')
-        plt.figtext(text_edge, 0.305,"CAPE: "+('%.0f' % c_cape.magnitude)+" J/kg", ha='left', va='center',fontsize=20,c='firebrick')
-        plt.figtext(text_edge, 0.265,"CIN: "+('%.0f' % c_cin.magnitude)+" J/kg", ha='left', va='center',fontsize=20,c='blue')
-        plt.figtext(text_edge, 0.21,"PW: "+('%.0f' % c_pw.magnitude)+" mm", ha='left', va='center',fontsize=20,c='lightseagreen')
-        plt.figtext(text_edge, 0.16,"LCL: "+('%.0f' % c_lcl_p.magnitude)+" hPa", ha='left', va='center',fontsize=20,c='black')
-        plt.figtext(text_edge, 0.13,"LCL: "+('%.1f' % c_lcl_t.magnitude)+"˚C", ha='left', va='center',fontsize=20,c='black')
+            plt.figtext(text_edge, 0.39,f"LFC: {c_lfc_p.magnitude:.1f} hPa", ha='left', va='center',fontsize=19,c='tab:red')
+            plt.figtext(text_edge, 0.36,f"LFC: {c_lfc_t.magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='tab:red')
+        plt.figtext(text_edge, 0.305,f"CAPE: {c_cape.magnitude:.0f} J/kg", ha='left', va='center',fontsize=19,c='firebrick')
+        plt.figtext(text_edge, 0.265,f"CIN: {c_cin.magnitude:.0f} J/kg", ha='left', va='center',fontsize=19,c='blue')
+        plt.figtext(text_edge, 0.21,f"PW: {c_pw.magnitude:.0f} mm", ha='left', va='center',fontsize=19,c='lightseagreen')
+        plt.figtext(text_edge, 0.16,f"LCL: {c_lcl_p.magnitude:.0f} hPa", ha='left', va='center',fontsize=19,c='black')
+        plt.figtext(text_edge, 0.13,f"LCL: {c_lcl_t.magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='black')
        
+        plt.figtext(text_edge, 0.61,"Station: ", ha='left', va='center',fontsize=19,c='black')
+        plt.figtext(text_edge, 0.58,f"  Pressure: {p[0].magnitude:.0f} hPa", ha='left', va='center',fontsize=19,c='black')
+        plt.figtext(text_edge, 0.55,f"  Temperature: {T[0].magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='black')
+        plt.figtext(text_edge, 0.52,f"  Dew Point: {Td[0].magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='black')
 
     ###############################################################
     ### Plot the relevant thermodynamic lines
     skew.plot_dry_adiabats(alpha=0.25, color='orangered')
-    skew.plot_moist_adiabats(alpha=0.25, color='tab:green')
-    skew.plot_mixing_lines(pressure=np.arange(1050, 80, -20) * units.hPa,linestyle='dotted', color='tab:blue',
-            mixing_ratio=np.array([2.5e-6,1e-5,3e-5,8e-5,2e-4,5e-4,0.001,0.002,0.004,0.007,0.01,0.016,0.024,0.032]).reshape(-1, 1))
+    skew.plot_moist_adiabats(alpha=0.25, colors='tab:green')
+    mixrats = [2e-6,1e-5,3e-5,8e-5,2e-4,5e-4,0.001,0.002,0.004,0.007,0.01,0.016,0.024,0.032]
+    p_at_ws = [120,120,120,120,120,120,120,120,165,220,268,367,497,645] * units.hPa
+    skew.plot_mixing_lines(pressure=np.arange(1050, 80, -20) * units.hPa,linestyle='dotted', colors='tab:blue',
+            mixing_ratio=np.array(mixrats).reshape(-1, 1))
+    
+    for pw,w in enumerate(mixrats):        
+        s_mixrat = f"{1000*w:.2g}"
+        if w == 0.002:
+            s_mixrat = s_mixrat+" g/kg"
+        # aaa = skew.plot(p_at_ws[pw], mpcalc.dewpoint(mpcalc.vapor_pressure(p_at_ws[pw], w)), color='tab:blue', marker='o')
+        skew.ax.text(mpcalc.dewpoint(mpcalc.vapor_pressure(p_at_ws[pw], w)).m, p_at_ws[pw].m, s_mixrat, color='tab:blue',
+                     rotation=50+pw, rotation_mode='anchor', ha='left', va='bottom')
 
     plt.tick_params(axis = 'y', which = 'major', labelsize = 16)
     plt.tick_params(axis = 'x', which = 'major', labelsize = 16, labelrotation=45)
@@ -203,7 +219,7 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     # Add the timestamp for the data to the plot
     s_site = df['station'][0]
     s_time = '{dt:%Y%m%d_%H%M}'.format(dt=df['time'][0])
-    add_timestamp(skew.ax, datetime.strptime(s_time, '%Y%m%d_%H%M'), pretext='Valid: ', y=1.02, x=-0.1, ha='left', fontsize=17)
+    add_timestamp(skew.ax, datetime.strptime(s_time, '%Y%m%d_%H%M'), pretext='Valid: ', y=1.02, x=0.01, ha='left', fontsize=17)
     skew.ax.set_title(s_site,fontsize=28,x=0.66)
 
 

@@ -17,7 +17,8 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
-def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,output_pdf=False,output_display=True):
+def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,
+               output_pdf=False,output_display=True,abs_tol=1.0):
     """
     Plots annotated Skew-T log-P diagram using metpy module, given a meteorological profile
     
@@ -31,11 +32,12 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
         plot_indices   (bool) [True]  = Include/exclude values for key indices estimated from profile
         output_pdf     (bool) [False] = Produce a PDF file of the plot in current directory
         output_display (bool) [True]  = Generate a plot interactively on the screen
+        abs_tol       (float) [1.0]   = The ± temperature lapse rate range [K/km] for defining isothermal & adiabatic profile intervals
         
+
     Outputs:
         skew         (object)         = The generated plot as an object
     """
-    
     
     ###############################################################
     ### Set up interctive display
@@ -47,16 +49,20 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     
     ###############################################################
     ### Parse meteorological variables
+    df = df.drop_duplicates(subset=['pressure'])
 
     # We will pull the data out of the sounding data into individual variables and assign units.
     p = df['pressure'].values * units.hPa
+    z = df['height'].values * units.m
     T = df['temperature'].values * units.degC
     Td = df['dewpoint'].values * units.degC
     wind_speed = df['speed'].values * units.knots
     wind_dir = df['direction'].values * units.degrees
     u, v = mpcalc.wind_components(wind_speed, wind_dir)
     
-
+    # Older soundings are missing upper-level dewpoints - fill in some bogus values to make some calculations work
+    Td_filled = df['dewpoint'].fillna(value=(1-np.exp(1-(df['pressure']/1000))-1)*40).values  * units.degC
+    
     ###############################################################
     ### Initialize plot
 
@@ -75,16 +81,18 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
         c_stab = ["indigo","silver","cadetblue","turquoise","yellowgreen","gold","deeppink"]
 
         # Other profile quantities needed to estimate stability in each interval
-        abs_tol = 0.2    # The ± temperature range for defining isothermal, adiabatic profile intervals
-        t_inv = T[:len(p)-1] - T[1:]  # Negative is inversion
-        t_dry = [np.nan] * (len(p)-1) # Negative is dry stable, positive unstable
-        t_moi = [np.nan] * (len(p)-1) # Negative is stable
-                                      #   positive while t_dry negative is conditionally unstable
-                                      #   both positive is moist adiabatic
-
+        t_inv = -(T[:len(p)-1] - T[1:]) / \
+                (z[:len(p)-1] - z[1:]) # Negative is inversion
+        
+        t_dry = [np.nan] * (len(p)-1)  # Negative is dry stable, positive unstable
+        t_moi = [np.nan] * (len(p)-1)  # Negative is stable
+                                       #   positive while t_dry negative is conditionally unstable
+                                       #   both positive is moist adiabatic
         for i in range(len(p)-1):     # Every interval between measurements in the sounding...
-            t_dry[i] = mpcalc.dry_lapse(p[i+1],T[i],reference_pressure=p[i]) - T[i+1]
-            t_moi[i] = mpcalc.moist_lapse(p[i+1:i+2],T[i],reference_pressure=p[i]) - T[i+1]
+            t_dry[i] = (mpcalc.dry_lapse(p[i+1],T[i],reference_pressure=p[i]) - T[i+1]) / \
+                       (z[i+1] - z[i])
+            t_moi[i] = (mpcalc.moist_lapse(p[i+1:i+2],T[i],reference_pressure=p[i]) - T[i+1]) / \
+                       (z[i+1] - z[i])
 
             t_type = [2] * (len(p)-1) # Codes for stability; default is generic "stable"
 
@@ -104,11 +112,11 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
             if t_moi[i].size == 1:
                 if t_dry[i] < 0 and t_moi[i] > 0:
                     t_type[i] = 4     # conditionally unstable
-                if isclose(t_moi[i].magnitude, 0, abs_tol=abs_tol):
+                if isclose(t_moi[i].magnitude, 0, abs_tol=abs_tol*1e-3):
                     t_type[i] = 3     # moist adiabatic
-            if isclose(t_dry[i].magnitude, 0, abs_tol=abs_tol):
+            if isclose(t_dry[i].magnitude, 0, abs_tol=abs_tol*1e-3):
                 t_type[i] = 5         # neutral or adiabatic
-            if isclose(t_inv[i].magnitude, 0, abs_tol=abs_tol):
+            if isclose(t_inv[i].magnitude, 0, abs_tol=abs_tol*1e-3):
                 t_type[i] = 1         # isothermal    
 
         for i in range(len(p)-1):     # Plot stability shading in each interval
@@ -150,7 +158,7 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     
     # Mark the LFC, EL
     t_parcel = mpcalc.parcel_profile(p, T[0], Td[0]) 
-    lfc_pressure,lfc_temperature = mpcalc.lfc(p, T, Td, t_parcel)
+    lfc_pressure,lfc_temperature = mpcalc.lfc(p, T, Td_filled, t_parcel)
     skew.plot(lfc_pressure, lfc_temperature, 'wo', markerfacecolor='red')
     el_pressure,el_temperature = mpcalc.el(p, T, Td, which='most_cape')
     skew.plot(el_pressure, el_temperature, 'wo', markerfacecolor='sienna')
@@ -162,13 +170,6 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
     
 
     ###############################################################
-    ### Shade areas of CAPE and CIN, plot stats   
-    if plot_cin_cape:
-        skew.shade_cin(p, T, t_parcel)
-        skew.shade_cape(p, T, t_parcel)
-    
-
-    ###############################################################
     ### Plot stability indices, other statistics 
     if plot_indices:
         c_cape,c_cin = mpcalc.cape_cin(p, T, Td, t_parcel, which_lfc='bottom', which_el='top')
@@ -176,7 +177,7 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
         c_lcl_z = ((T[0]-Td[0]) * (125 * units.m / units.degK)).to_base_units()
         c_el_p,c_el_t = mpcalc.el(p, T, Td, which='most_cape')
         c_pw = mpcalc.precipitable_water(p,Td)
-        c_lfc_p,c_lfc_t = mpcalc.lfc(p, T, Td, t_parcel)
+        c_lfc_p,c_lfc_t = mpcalc.lfc(p, T, Td_filled, t_parcel)
         c_lfc_t = c_lfc_t.to(units.degC)
 
         if not np.isnan(c_el_p.magnitude):
@@ -195,10 +196,18 @@ def plot_skewt(df,plot_stability=True,plot_cin_cape=True,plot_indices=True,outpu
         plt.figtext(text_edge, 0.58,f"  Pressure: {p[0].magnitude:.0f} hPa", ha='left', va='center',fontsize=19,c='black')
         plt.figtext(text_edge, 0.55,f"  Temperature: {T[0].magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='black')
         plt.figtext(text_edge, 0.52,f"  Dew Point: {Td[0].magnitude:.1f}˚C", ha='left', va='center',fontsize=19,c='black')
+    
 
     ###############################################################
+    ### Shade areas of CAPE and CIN, plot stats   
+    if plot_cin_cape and c_cape.magnitude > 0:
+        skew.shade_cin(p, T, t_parcel)
+        skew.shade_cape(p, T, t_parcel)
+
+        
+    ###############################################################
     ### Plot the relevant thermodynamic lines
-    skew.plot_dry_adiabats(alpha=0.25, color='orangered')
+    skew.plot_dry_adiabats(t0=list(range(-40,85,10))*units.degC, alpha=0.25, color='orangered')
     skew.plot_moist_adiabats(alpha=0.25, colors='tab:green')
     mixrats = [2e-6,1e-5,3e-5,8e-5,2e-4,5e-4,0.001,0.002,0.004,0.007,0.01,0.016,0.024,0.032]
     p_at_ws = [120,120,120,120,120,120,120,120,165,220,268,367,497,645] * units.hPa
